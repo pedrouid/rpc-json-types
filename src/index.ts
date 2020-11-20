@@ -1,3 +1,5 @@
+import { EventEmitter } from 'events';
+
 export interface JsonRpcRequest<T = any> {
   id: number;
   jsonrpc: string;
@@ -28,15 +30,19 @@ export type JsonRpcPayload<P = any, R = any> =
   | JsonRpcRequest<P>
   | JsonRpcResponse<R>;
 
-export abstract class IJsonRpcProvider {
-  //connection
-  public abstract connect(params?: any): Promise<void>;
-  public abstract disconnect(params?: any): Promise<void>;
+export abstract class IEvents {
+  public abstract events: EventEmitter;
 
   // events
   public abstract on(event: string, listener: any): void;
   public abstract once(event: string, listener: any): void;
   public abstract off(event: string, listener: any): void;
+}
+
+export abstract class IJsonRpcProvider extends IEvents {
+  //connection
+  public abstract connect(params?: any): Promise<void>;
+  public abstract disconnect(params?: any): Promise<void>;
 
   // jsonrpc
   public abstract request(payload: JsonRpcRequest): Promise<any>;
